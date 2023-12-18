@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>酒店界面</title>
+    <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+    <style>
+
+        #loginForm {
+            width: 300px;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+        #loginForm h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        #loginForm input[type="text"], #loginForm input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #loginForm input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #loginForm input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #navbar {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: center;
+            background-color: #8dc3f4;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+        }
+        .nav-item {
+            color: #fff;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+            transition: background-color 0.3s;
+            border-bottom: 2px solid transparent;
+            margin: 0 10px;
+        }
+        .nav-item:hover {
+            background-color: #6b9fd3;
+        }
+        .content {
+            display: none;
+            padding: 20px;
+            background-color: #fff;
+            margin-top: 50px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 10px 20px 0 rgba(0,0,0,0.1);
+            /*width: 95%;*/
+            height: 90vh; /* 增大内容区域的高度 */
+            overflow-y: auto; /* 添加滚动条 */
+        }
+        .active {
+            display: block;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        p {
+            line-height: 1.6;
+            color: #666;
+        }
+        footer {
+            background-color: #8dc3f4;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed; /* 将页脚固定在底部 */
+            bottom: 0;
+            width: 100%;
+        }
+
+
+        #HotelRoomQueryResult {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #content-container {
+            width: 60vw; /* 设置宽度为视口宽度的一半 */
+        }
+        #hotelRoomSearch { text-align: left; /* 设置文本左对齐 */ }
+        #MyBookQueryResults {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin: 20px;
+        }
+
+        #MyBookQueryResult {
+            width: 300px;
+            height: 400px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 10px;
+            overflow-y: auto;
+        }
+
+        #MyBookQueryResult div {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        #MyBookQueryResult button {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: white;
+            background-color: #f44336;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        #MyBookQueryResult button:hover {
+            background-color: #e53935;
+        }
+        /* 酒店房间搜索表单的css样式 */
+
+        /* 设置整个div的背景颜色，边框，内边距，外边距，圆角，阴影，字体 */
+        #hotelRoomSearch {
+            background-color: #f0f0f0;
+            border: 2px solid #cccccc;
+            padding: 20px;
+            margin: 20px auto;
+            width: 60%;
+            border-radius: 10px;
+            box-shadow: 5px 5px 10px #888888;
+            font-family: Arial, sans-serif;
+        }
+
+        /* 设置表单元素的字体大小，颜色，对齐方式 */
+        #hotelRoomSearch form {
+            font-size: 18px;
+            color: #333333;
+            text-align: left;
+        }
+
+        /* 设置标签元素的宽度，显示方式，垂直对齐方式 */
+        #hotelRoomSearch label {
+            width: 20%;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        /* 设置输入框和选择框的宽度，高度，边框，内边距，外边距，圆角 */
+        #hotelRoomSearch input, #hotelRoomSearch select {
+            width: 70%;
+            height: 30px;
+            border: 1px solid #999999;
+            padding: 5px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        /* 设置提交按钮的宽度，高度，背景颜色，边框，内边距，外边距，圆角，字体大小，颜色，光标 */
+        #hotelRoomSearch input[type=submit] {
+            width: 20%;
+            height: 40px;
+            background-color: #0099ff;
+            border: none;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
+            font-size: 20px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* 设置提交按钮在鼠标悬停时的背景颜色 */
+        #hotelRoomSearch input[type=submit]:hover {
+            background-color: #0066cc;
+        }
+
+    </style>
+    <link rel="stylesheet" type="text/css" href="styles1.css">
+</head>
+<body>
+<img src="R.jpg" alt="Your Image" id ="background-image">
+<div id="loginForm">
+    <h2>用户登录</h2>
+    <form id="userLoginForm">
+        <input type="text" id="username" placeholder="用户名" required>
+        <input type="password" id="password" placeholder="密码" required minlength="8">
+        <input type="submit" value="登录">
+    </form>
+</div>
+
+<div id="navbar">
+    <div class="nav-item" onclick="showContent('home')">首页</div>
+    <div class="nav-item" onclick="showContent('My')">我的</div>
+<!--    <div class="nav-item" onclick="showContent('Business')">商家</div>-->
+    <div class="nav-item" onclick="showContent('contact')">联系我们</div> <!-- 添加新的导航项-联系我们 -->
+</div>
+
+<div id="content-container">
+    <div id="home" class="content active">
+        <h1>欢迎来到我们的首页</h1>
+        <div id="hotelRoomSearch">
+            <form>
+                <label for="destination">目的地/酒店名称:</label><br>
+                <input type="text" id="destination" name="destination" value="上海"><br>
+                <label for="checkIn">入住时间:</label><br>
+                <input type="date" id="checkIn" name="checkIn" value="2023-11-15"><br>
+                <label for="checkOut">退房时间:</label><br>
+                <input type="date" id="checkOut" name="checkOut" value="2023-11-18"><br>
+                <label for="type">类型:</label><br>
+                <select id="type" name="type">
+                    <option value="国内" selected>国内</option>
+                    <option value="国外">国外</option>
+                    <option value="钟点+月租">钟点+月租</option>
+                    <option value="民宿">民宿</option>
+                </select><br><br>
+                <label for="star">星级:</label><br>
+                <input type="number" id="star" name="star" min="1" max="5" value="5"><br>
+                <label for="brand">品牌:</label><br>
+                <input type="text" id="brand" name="brand" value="茂悦酒店集团"><br>
+                <label for="room">几人间:</label><br>
+                <input type="number" id="room" name="room" min="1" max="4" value="2"><br>
+                <label for="price">价格:</label><br>
+                <select id="price" name="price">
+                    <option value="0-150">0-150</option>
+                    <option value="150-300">150-300</option>
+                    <option value="300-450">300-450</option>
+                    <option value="450-600">450-600</option>
+                    <option value="600+" selected>600以上</option>
+                </select><br>
+                <input type="submit" value="查询">
+            </form>
+        </div>
+        <div id="HotelRoomQueryResult"></div>
+    </div>
+
+    <div id="My" class="content">
+        <h1>我的</h1>
+        <button class="MyBookQuery">预定查询</button>
+        <div id="MyBookQueryResults"></div>
+    </div>
+    <div id="Business" class="content">
+        <h1>商家</h1>
+        <table id="orders">
+            <tr>
+                <th>订单ID</th>
+                <th>用户ID</th>
+                <th>酒店ID</th>
+                <th>房间ID</th>
+                <th>预订时间</th>
+                <th>是否取消预订</th>
+                <th>入住时间</th>
+                <th>结束时间</th>
+                <th>儿童人数</th>
+                <th>押金</th>
+                <th>利润</th>
+                <th>折扣</th>
+                <th>备注</th>
+                <th>操作</th>
+            </tr>
+        </table>
+    </div>
+    <div id="contact" class="content">
+        <h1>联系我们</h1>
+        <p>您可以通过以下方式联系我们：电话：123-456-7890，邮箱：info@example.com</p>
+    </div>
+</div>
+
+<!--<footer>-->
+<!--    &copy; 2023 公司名称. 保留所有权利.-->
+<!--</footer>-->
+
+<script>
+    function showContent(id) {
+        var contents = document.getElementsByClassName('content');
+        for (var i = 0; i < contents.length; i++) {
+            contents[i].style.display = 'none';
+        }
+        document.getElementById(id).style.display = 'block';
+    }
+    //登录事件
+    $(document).ready(function() {
+        $("#userLoginForm").on("submit", function(event) {
+            event.preventDefault();
+            var username = $("#username").val();
+            var password = $("#password").val();
+            if (username === "" || password === "") {
+                alert("用户名和密码不能为空！");
+                return;
+            }
+            if (password.length < 8) {
+                alert("密码长度不能少于8个字符！");
+                return;
+            }
+
+            $.ajax({
+                url: '/login',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    phone: username,
+                    password: password
+                }),
+                success: function(response) {
+                    if (response === "登录成功") {
+                        alert("登录成功！");
+                        $("#loginForm").hide();
+                        // 设置cookie
+                        document.cookie = "username=" + username + "; path=/";
+                        // 输出cookie
+                        console.log(document.cookie);
+
+                    } else {
+                        alert("用户名或密码错误！");
+                    }
+                },
+                error: function() {
+                    alert("服务器错误！");
+                }
+            });
+        });
+    });
+
+    //酒店查询事件
+
+    $("#hotelRoomSearch form").submit(function(event) {
+        event.preventDefault();
+
+        var minPrice, maxPrice;
+        var price = $("#price").val();
+        if (price === "600+") {
+            minPrice = 600;
+            maxPrice = Number.MAX_VALUE;
+        } else {
+            var prices = price.split("-");
+            minPrice = parseInt(prices[0]);
+            maxPrice = parseInt(prices[1]);
+        }
+
+        var destination = $("#destination").val();
+        var type = $("#type").val();
+        var brand = $("#brand").val();
+        var star = $("#star").val();
+        var room = $("#room").val();
+        var checkIn = $("#checkIn").val();
+        var checkOut = $("#checkOut").val();
+
+        // 设置cookie
+        document.cookie = "checkIn=" + checkIn + "; path=/";
+        document.cookie = "checkOut=" + checkOut + "; path=/";
+
+        // 输出cookie
+        console.log("入住时间cookie: ", document.cookie.match('(^|;)\\s*' + "checkIn" + '\\s*=\\s*([^;]+)')?.pop() || '');
+        console.log("退房时间cookie: ", document.cookie.match('(^|;)\\s*' + "checkOut" + '\\s*=\\s*([^;]+)')?.pop() || '');
+
+        console.log("提交的数据：", minPrice, maxPrice, destination, type, brand, star, room);
+
+        $.ajax({
+            url: "/api/hotelRoom/search",
+            data: {
+                minPrice: minPrice,
+                maxPrice: maxPrice,
+                destination: destination,
+                type: type,
+                brand: brand,
+                star: star,
+                room: room
+            },
+            success: function(data) {
+                console.log("接收到的数据：", data);
+
+                // 清空之前的查询结果
+                $("#HotelRoomQueryResult").empty();
+
+                // 处理返回的数据
+                $.each(data, function(index, item) {
+                    var result = "<div class='hotelInfo'>" +
+                        "<img src=\"th.jpg\" alt=\"Your Image\" id =\"bed\">"+
+                        "<div class='hotelName'> " + item.hotelName + "</div>" +
+                        "<div class='hotelAddress'> " + item.hotelAddress + "</div>" +
+                        "<div class='hotelType'> " + item.hotelType + "</div>" +
+                        "<div class='hotelStar'>" + item.hotelStar + "</div>" +
+                        "<div class='hotelBrand'> " + item.hotelBrand + "</div>" +
+                        "<div class='roomPersonCapacity'> " + item.roomPersonCapacity +"</div>" +
+                        "<div class='roomPrice'> " + item.roomPrice + "</div>" +
+                        "<button class='HotelRoomBookButton'>预定</button>" +
+                        "</div>";
+                    $("#HotelRoomQueryResult").append(result);
+                });
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log("请求失败：", textStatus, errorThrown);
+            }
+        });
+    });
+
+
+
+//预定事件
+
+    $("#HotelRoomQueryResult").on('click', '.HotelRoomBookButton', function() {
+        var hotelInfo = $(this).parent('.hotelInfo');
+        var hotelName = hotelInfo.find('.hotelName').text().trim();
+        var hotelAddress = hotelInfo.find('.hotelAddress').text();
+        var hotelType = hotelInfo.find('.hotelType').text();
+        var hotelStar = hotelInfo.find('.hotelStar').text();
+        var hotelBrand = hotelInfo.find('.hotelBrand').text();
+        var roomPersonCapacity = hotelInfo.find('.roomPersonCapacity').text();
+        var roomPrice = hotelInfo.find('.roomPrice').text();
+
+        // 获取cookie中的username，checkIn和checkOut
+        var username = document.cookie.split('; ').find(row => row.startsWith('username')).split('=')[1];
+        var checkIn = document.cookie.split('; ').find(row => row.startsWith('checkIn')).split('=')[1];
+        var checkOut = document.cookie.split('; ').find(row => row.startsWith('checkOut')).split('=')[1];
+
+        // 生成一个界面让用户选择儿童人数（0-3）
+        var childCount = window.prompt("请输入儿童人数（0-3）", "0");
+
+        // 计算押金（房间价格+50）
+        var deposit = parseInt(roomPrice) + 50;
+
+        // 获取当前时间作为预定时间
+        var now = new Date();
+        var bookingTime = now.toISOString().slice(0,10);
+
+        // 构造要传递给后端的数据对象
+        var data = {
+            hotelName: hotelName,
+            hotelAddress: hotelAddress,
+            hotelType: hotelType,
+            hotelStar: hotelStar,
+            hotelBrand: hotelBrand,
+            roomPersonCapacity: roomPersonCapacity,
+            roomPrice: roomPrice,
+            deposit: deposit,
+            username: username,
+            bookingTime: bookingTime,
+            checkIn: checkIn,
+            checkOut: checkOut,
+            childCount: childCount
+        };
+
+        // 打印数据对象
+        console.log(data);
+
+        // 将数据对象转换为JSON字符串
+        var jsonData = JSON.stringify(data);
+
+        // 使用AJAX将数据传递给后端
+        $.ajax({
+            url: "/HotelRoomBooking",
+            type: "POST",
+            data: jsonData,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(response) {
+                if (response.success) {
+                    alert("预定成功！");
+
+                    // 首先，尝试从cookie中获取TotalBookingData
+                    var totalBookingData = JSON.parse(document.cookie.split('; ').find(row => row.startsWith('TotalBookingData')).split('=')[1] || '[]');
+
+                    // 然后，查找是否有相同的预定
+                    var existingBookingIndex = totalBookingData.findIndex(function(booking) {
+                        return booking.hotelName === data.hotelName && booking.roomType === data.roomType;
+                    });
+
+                    if (existingBookingIndex !== -1) {
+                        // 如果找到了相同的预定，就覆盖它
+                        totalBookingData[existingBookingIndex] = data;
+                    } else {
+                        // 否则，将新的预定数据添加到TotalBookingData数组中
+                        totalBookingData.push(data);
+                    }
+
+                    // 最后，将更新后的TotalBookingData存储回cookie中
+                    document.cookie = "TotalBookingData=" + JSON.stringify(totalBookingData) + "; path=/";
+
+                    console.log(document.cookie);
+                } else {
+                    alert("预定失败：" + response.message);
+                }
+            }
+        });
+    });
+
+
+    // $(document).ready(function() {
+    //     $('.MyHotelRoomBook').click(function() {
+    //         // 读取cookie中的TotalBookingData
+    //         var totalBookingData = document.cookie
+    //             .split('; ')
+    //             .find(row => row.startsWith('TotalBookingData='))
+    //             .split('=')[1];
+    //
+    //         // 解析TotalBookingData为一个数组
+    //         var totalBookingDataArr = JSON.parse(totalBookingData);
+    //
+    //         // 创建一个映射将英文键翻译为中文
+    //         var keyMap = {
+    //             hotelName: '酒店名称',
+    //             hotelAddress: '酒店地址',
+    //             hotelType: '酒店类型',
+    //             hotelStar: '酒店星级',
+    //             hotelBrand: '酒店品牌',
+    //             roomPersonCapacity: '房间人数容量',
+    //             roomPrice: '房间价格',
+    //             deposit: '押金',
+    //             username: '用户名',
+    //             bookingTime: '预定时间',
+    //             checkIn: '入住时间',
+    //             checkOut: '退房时间',
+    //             childCount: '儿童数量'
+    //         };
+    //
+    //         // 遍历TotalBookingDataArr的每个元素
+    //         totalBookingDataArr.forEach(function(bookingDataObj) {
+    //             // 创建一个div包裹每个预定数据
+    //             var bookingDataDiv = $('<div class="bookingData"></div>');
+    //
+    //             // 遍历bookingDataObj的每个键值对
+    //             for (var key in bookingDataObj) {
+    //                 // 将键翻译为中文
+    //                 var chineseKey = keyMap[key] || key;
+    //
+    //                 // 将键值对以div包裹起来显示
+    //                 var keyValueDiv = $('<div></div>').text(chineseKey + ': ' + bookingDataObj[key]);
+    //                 bookingDataDiv.append(keyValueDiv);
+    //             }
+    //
+    //             // 生成一个取消预定的按钮
+    //             var cancelButton = $('<button class="UserCancelHotelRoomBook">取消预定</button>');
+    //             bookingDataDiv.append(cancelButton);
+    //
+    //             // 将bookingDataDiv添加到body中
+    //             $('body').append(bookingDataDiv);
+    //         });
+    //     });
+    // });
+
+
+
+
+    $(document).ready(function() {
+
+        $(".MyBookQuery").click(function() {
+            var cookies = document.cookie.split('; ');
+            var username = '';
+            for (var i = 0; i < cookies.length; i++) {
+                if (cookies[i].startsWith('username=')) {
+                    username = cookies[i].split('=')[1];
+                    break;
+                }
+            }
+            console.log("Username: " + username);
+            // 清空上次的结果
+            $('#MyBookQueryResults').empty();
+            $.ajax({
+                url: "/MyBookQuery",
+                type: "POST",
+                data: JSON.stringify({username: username}),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data) {
+                    console.log("Received data: ", data);
+                    // 处理返回的数据
+                    data.forEach(function(order) {
+                        var div = $('<div id="MyBookQueryResult"></div>');
+                        div.append('<div>订单编号: ' + order.id + '</div>');
+                        div.append('<div>客户编号: ' + order.customer_Id + '</div>');
+                        div.append('<div>酒店编号: ' + order.hotel_Id + '</div>');
+                        div.append('<div>房间编号: ' + order.room_Id + '</div>');
+                        div.append('<div>预订日期: ' + new Date(order.book_Date).toLocaleDateString() + '</div>');
+                        div.append('<div>是否取消: ' + (order.isCancel ? '是' : '否') + '</div>');
+                        div.append('<div>入住日期: ' + (order.checkin_Date ? new Date(order.checkin_Date).toLocaleDateString() : '无') + '</div>');
+                        div.append('<div>结束日期: ' + (order.end_Date ? new Date(order.end_Date).toLocaleDateString() : '无') + '</div>');
+                        div.append('<div>儿童人数: ' + order.children_Num + '</div>');
+                        div.append('<div>押金: ' + order.deposit + '</div>');
+                        div.append('<div>金额: ' + order.money + '</div>');
+                        div.append('<div>折扣: ' + order.discount + '</div>');
+                        div.append('<div>备注: ' + order.remarks + '</div>');
+                        div.append('<button class="MyOrderCancel">取消预定</button>');
+                        $('#MyBookQueryResults').append(div);
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                }
+            });
+        });
+
+        // 添加一个点击事件监听器到 "取消预定" 按钮
+        $("#MyBookQueryResults").on("click", ".MyOrderCancel", function() {
+            // 获取当前按钮所在的 div
+            var div = $(this).parent();
+
+            // 从 div 中获取订单编号
+            var orderId = div.find('div').first().text().split(': ')[1];
+
+            $.ajax({
+                url: "/CustomerCancelOrder",
+                type: "POST",
+                data: JSON.stringify({orderId: orderId}),
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                success: function(data) {
+                    // 处理成功的响应
+                    console.log("成功的响应: ", data);
+                    alert("预定已成功取消");
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // 处理错误的响应
+                    console.log("错误的响应: ", textStatus, errorThrown);
+                    alert("取消预定失败: " + textStatus + ' : ' + errorThrown);
+                }
+            });
+        });
+
+
+
+
+    });
+
+
+    //
+    // $(document).ready(function() {
+    //     $.get('/qwr/orders', function(data) {
+    //         console.log(data);
+    //         data.forEach(function(order) {
+    //             var row = '<tr>';
+    //             row += '<td>' + order.id + '</td>';
+    //             row += '<td>' + order.customer_Id + '</td>';
+    //             console.log(order.customer_Id);
+    //             row += '<td>' + order.hotel_Id + '</td>';
+    //             row += '<td>' + order.room_Id + '</td>';
+    //             // 如果日期为null，显示为null
+    //             row += '<td>' + (order.book_Date ? new Date(order.book_Date).toLocaleDateString() : null) + '</td>';
+    //             row += '<td>' + order.isCancel + '</td>';
+    //             row += '<td>' + (order.checkin_Date ? new Date(order.checkin_Date).toLocaleDateString() : null) + '</td>';
+    //             row += '<td>' + (order.end_Date ? new Date(order.end_Date).toLocaleDateString() : null) + '</td>';
+    //             row += '<td>' + order.children_Num + '</td>';
+    //             row += '<td>' + order.deposit + '</td>';
+    //             row += '<td>' + order.money + '</td>';
+    //             row += '<td>' + order.discount + '</td>';
+    //             row += '<td>' + order.remarks + '</td>';
+    //             row += '<td>';
+    //             row += '<button onclick="checkin(' + order.id + ')">入住</button>';
+    //             row += '<button onclick="cancel(' + order.id + ')">取消订单</button>';
+    //             row += '<button onclick="checkout(' + order.id + ', ' + order.customer_Id + ', ' + order.hotel_Id + ', ' + order.room_Id + ')">退房</button>';
+    //             row += '</td>';
+    //             row += '</tr>';
+    //             $('#orders').append(row);
+    //         });
+    //     });
+    // });
+
+
+    // function checkin(id) {
+    //     var checkin_date = prompt("请输入入住日期（格式：YYYY-MM-DD）");
+    //     var datePattern = /^\d{4}-\d{2}-\d{2}$/;
+    //     if (!datePattern.test(checkin_date)) {
+    //         alert("日期格式不正确，请重新输入！");
+    //         return;
+    //     }
+    //     // 创建一个新的日期对象
+    //     var date = new Date(checkin_date);
+    //     $.post('/qwr/orders/checkin', { id: id, checkin_date: date.toISOString() });
+    // }
+    // function cancel(id) {
+    //     $.post('/qwr/orders/cancel', { id: id });
+    // }
+    //
+    // function checkout(id, customer_Id, hotel_Id, room_Id) {
+    //     var checkout_date = prompt("请输入入住日期（格式：YYYY-MM-DD）");
+    //     var datePattern = /^\d{4}-\d{2}-\d{2}$/;
+    //     if (!datePattern.test(checkout_date)) {
+    //         alert("日期格式不正确，请重新输入！");
+    //         return;
+    //     }
+    //     // 创建一个新的日期对象
+    //     var date = new Date(checkout_date);
+    //     console.log("id: " + id + ", customer_id: " + customer_Id + ", hotel_id: " + hotel_Id + ", room_id: " + room_Id + ", end_date: " + date.toISOString());
+    //     $.post('/qwr/orders/checkout', { id: id, customer_id: customer_Id, hotel_id: hotel_Id, room_id: room_Id, end_date: date.toISOString()});
+    // }
+
+</script>
+
+</body>
+</html>
