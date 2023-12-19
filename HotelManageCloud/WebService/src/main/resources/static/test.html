@@ -16,7 +16,7 @@
 <script>
     $(document).ready(function(){
         $("#testButton").click(function(){
-            $.get("/test", function(data, status){
+            $.get("http://127.0.0.1:8090/test/test", function(data, status){
                 $("#testResult").html(data);
             });
         });

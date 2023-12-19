@@ -23,14 +23,9 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins: "http://localhost:80"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-              - HEAD
-              - OPTIONS
+            # 跨域配置不生效应该是域名配错了，本地测试开个*就好了，有具体域名再说吧
+            allowedOrigins: "*"
+            allowedMethods: "*"
 
 
 eureka:

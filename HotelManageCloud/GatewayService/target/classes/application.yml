@@ -4,27 +4,27 @@ server:
 spring:
   application:
     name: GatewayService
-#  cloud:
-#    gateway:
-#      routes:
-#        - id: consumer-service
-#          uri: lb://consumer-service
-#          predicates:
-#            - Path=/test/**
-#
-#
-#
-#      global cors:
-#        corsConfigurations:
-#          '[/**]':
-#            allowedOrigins: "http://localhost:80"
-#            allowedMethods:
-#              - GET
-#              - POST
-#              - PUT
-#              - DELETE
-#              - HEAD
-#              - OPTIONS
+  cloud:
+    gateway:
+      routes:
+        - id: consumer-service
+          uri: lb://consumer-service
+          # 这里要用 curl 127.0.0.1:8090/test/test，因为你的 path 谓词配置了 /test/**
+          # 自己对比以下有什么区别
+          predicates:
+            - Path=/test/**
+          # 这个 rewrite 的 filter 是必须的，作用是把你前面写的那个路由谓词 path 给去掉，否则到后端服务是会 404 的。
+          # 因为你的后端服务并没有 /test/test 这个 path。
+          filters:
+            - RewritePath=/test/(?<remaining>.*), /$\{remaining}
+
+
+
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
 
 
 eureka:
